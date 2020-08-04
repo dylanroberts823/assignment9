@@ -17,9 +17,10 @@ public class LevelGenerator : MonoBehaviour {
 	public bool generateRoof = true;
 
 	//allows us to track the number of holes made
-	private int holes = 0;
-	private int maxHoles = 5;
+	public int holes = 0;
+	private int maxHoles = 50;
 	private bool makeHole = false;
+	private bool characterBlock = true;
 
 	// number of times we want to "dig" in our maze
 	public int tilesToRemove = 50;
@@ -40,6 +41,8 @@ public class LevelGenerator : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		//reset holes
+		holes = 0;
 
 		// initialize map 2D array
 		mapData = GenerateMazeData();
@@ -47,6 +50,8 @@ public class LevelGenerator : MonoBehaviour {
 		// create actual maze blocks from maze boolean data
 		for (int z = 0; z < mazeSize; z++) {
 			for (int x = 0; x < mazeSize; x++) {
+				characterBlock = false;
+
 				if (mapData[z, x]) {
 					CreateChildPrefab(wallPrefab, wallsParent, x, 1, z);
 					CreateChildPrefab(wallPrefab, wallsParent, x, 2, z);
@@ -60,11 +65,14 @@ public class LevelGenerator : MonoBehaviour {
 
 					// flag as placed so we never consider placing again
 					characterPlaced = true;
+					characterBlock = true;
 				}
 				//Decide if we're going to place a hole here
-				//By making it .2, create a 1 in five of hole generation
-				if (Random.value < .2 & holes < maxHoles) {
+				//By making it .1, create a 1 in ten chance of hole generation
+				if (Random.value < .1 & holes < maxHoles & !characterBlock) {
 					makeHole = true;
+					holes += 1;
+					print("made hole!");
 				} else {
 					makeHole = false;
 				}
