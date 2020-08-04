@@ -16,6 +16,11 @@ public class LevelGenerator : MonoBehaviour {
 	// allows us to see the maze generation from the scene view
 	public bool generateRoof = true;
 
+	//allows us to track the number of holes made
+	private int holes = 0;
+	private int maxHoles = 5;
+	private bool makeHole = false;
+
 	// number of times we want to "dig" in our maze
 	public int tilesToRemove = 50;
 
@@ -47,7 +52,7 @@ public class LevelGenerator : MonoBehaviour {
 					CreateChildPrefab(wallPrefab, wallsParent, x, 2, z);
 					CreateChildPrefab(wallPrefab, wallsParent, x, 3, z);
 				} else if (!characterPlaced) {
-					
+
 					// place the character controller on the first empty wall we generate
 					characterController.transform.SetPositionAndRotation(
 						new Vector3(x, 1, z), Quaternion.identity
@@ -56,12 +61,20 @@ public class LevelGenerator : MonoBehaviour {
 					// flag as placed so we never consider placing again
 					characterPlaced = true;
 				}
+				//Decide if we're going to place a hole here
+				//By making it .2, create a 1 in five of hole generation
+				if (Random.value < .2 & holes < maxHoles) {
+					makeHole = true;
+				} else {
+					makeHole = false;
+				}
+				if (!makeHole) {
+					// create floor and ceiling
+					CreateChildPrefab(floorPrefab, floorParent, x, 0, z);
 
-				// create floor and ceiling
-				CreateChildPrefab(floorPrefab, floorParent, x, 0, z);
-
-				if (generateRoof) {
-					CreateChildPrefab(ceilingPrefab, wallsParent, x, 4, z);
+					if (generateRoof) {
+						CreateChildPrefab(ceilingPrefab, wallsParent, x, 4, z);
+					}
 				}
 			}
 		}
@@ -88,7 +101,7 @@ public class LevelGenerator : MonoBehaviour {
 
 		// iterate our random crawler, clearing out walls and straying from edges
 		while (tilesConsumed < tilesToRemove) {
-			
+
 			// directions we will be moving along each axis; one must always be 0
 			// to avoid diagonal lines
 			int xDirection = 0, yDirection = 0;
