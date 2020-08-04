@@ -22,6 +22,10 @@ public class LevelGenerator : MonoBehaviour {
 	private bool makeHole = false;
 	private bool characterBlock = true;
 
+	//Level tracker
+	public static int level = 0;
+	public static bool levelLock = false;
+
 	// number of times we want to "dig" in our maze
 	public int tilesToRemove = 50;
 
@@ -43,6 +47,9 @@ public class LevelGenerator : MonoBehaviour {
 	void Start () {
 		//reset holes
 		holes = 0;
+
+		//reset level levelLock
+		levelLock = false;
 
 		// initialize map 2D array
 		mapData = GenerateMazeData();
@@ -72,7 +79,6 @@ public class LevelGenerator : MonoBehaviour {
 				if (Random.value < .1 & holes < maxHoles & !characterBlock) {
 					makeHole = true;
 					holes += 1;
-					print("made hole!");
 				} else {
 					makeHole = false;
 				}

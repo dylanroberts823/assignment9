@@ -13,6 +13,11 @@ public class GrabPickups : MonoBehaviour {
 
 	void OnControllerColliderHit(ControllerColliderHit hit) {
 		if (hit.gameObject.tag == "Pickup") {
+			//transform to be sure no double pickups
+			if (!LevelGenerator.levelLock){
+				LevelGenerator.level += 1;
+				LevelGenerator.levelLock = true;
+			}
 			pickupSoundSource.Play();
 			SceneManager.LoadScene("Play");
 		}

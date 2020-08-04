@@ -16,6 +16,7 @@ public class FallInHole : MonoBehaviour
     {
       // if player goes past the left edge, destroy it
       if (transform.position.y < -2) {
+        LevelGenerator.level = 0;
         SceneManager.LoadScene("Game Over");
       }
     }
